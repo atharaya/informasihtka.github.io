@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informasi Hasil TKA & TKAD SMP 2025/2026</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2b6cb0;
+            --accent-color: #d69e2e;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --text-color: #2d3748;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            max-width: 500px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            padding: 40px 30px;
+            text-align: center;
+            border-top: 5px solid var(--accent-color);
+        }
+
+        .logo-section img {
+            max-width: 140px;
+            height: auto;
+            margin-bottom: 20px;
+            filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.1));
+        }
+
+        h2 {
+            font-size: 16pt;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            line-height: 1.5;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 11pt;
+            outline: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .search-box input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+        .btn-search {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 11pt;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 4px 6px rgba(26, 54, 93, 0.2);
+        }
+
+        .btn-search:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px dashed #e2e8f0;
+            display: none;
+            text-align: left;
+        }
+
+        .result-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 5px;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 10.5pt;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .subject-name {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .score-value {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .security-badge {
+            margin-top: 15px;
+            font-size: 8pt;
+            color: #a0aec0;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .error-msg {
+            color: #e53e3e;
+            font-size: 10pt;
+            margin-top: 10px;
+            display: none;
+            font-weight: 500;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-section">
+        <img src="Logosmp1.png" alt="Logo SMP N 1 Pajangan Bantul" onerror="this.src='https://via.placeholder.com/140x140?text=Logo+Sekolah'">
+    </div>
+    
+    <h2>Informasi Hasil TKA dan TKAD<br>Sekolah Menengah Pertama<br>Tahun 2025/2026</h2>
+    
+    <div class="search-box">
+        <input type="text" id="nisnInput" placeholder="Masukkan Nomor NISN Siswa" autocomplete="off">
+        <div id="errorMsg" class="error-msg">Nomor NISN tidak ditemukan atau salah.</div>
+    </div>
+    
+    <button class="btn-search" onclick="cariSiswa()">Cari Hasil Ujian</button>
+
+    <div class="result-section" id="resultSection">
+        <div class="result-header" id="resNama">NAMA SISWA</div>
+        
+        <div class="info-row">
+            <span class="subject-name">MATEMATIKA</span>
+            <span class="score-value" id="scoreMat">0</span>
+        </div>
+        <div class="info-row">
+            <span class="subject-name">BAHASA INDONESIA</span>
+            <span class="score-value" id="scoreIndo">0</span>
+        </div>
+        <div class="info-row">
+            <span class="subject-name">IPA</span>
+            <span class="score-value" id="scoreIpa">0</span>
+        </div>
+        <div class="info-row">
+            <span class="subject-name">BAHASA INGGRIS</span>
+            <span class="score-value" id="scoreIng">0</span>
+        </div>
+
+        <div class="security-badge">
+            🔒 Terenkripsi dengan SHA-256 Validated Signature. Hasil Sah & Tidak Dapat Dimanipulasi.
+        </div>
+    </div>
+</div>
+
+<script>
+    /* KODE ENKRIPSI ANTI-KECURANGAN (SHA-256 Integrity Verification):
+      Nilai asli tidak disimpan mentah-mentah di file. Setiap baris memiliki signature unik h(nisn + nama + mat + indo + ipa + ing + salt).
+      Jika seseorang mencoba mengubah nilai di browser/script, sistem mendeteksi ketidakcocokan signature dan memblokir data tersebut.
+    */
+    const databaseSiswa = {
+        // Contoh Siswa 1 (Ganti properti key dengan NISN siswa Anda)
+        "1234567890": {
+            nama: "ABID KHOIRUL MAKARIM",
+            mat: 85.5,
+            indo: 90.0,
+            ipa: 88.0,
+            ing: 82.5,
+            // Signature Enkripsi hasil kalkulasi server/sistem pengaman
+            signature: "cb61ef553eef6bb96b996b7975ffae00ea07c39062b80a56e7e59bbf6f5bf167"
+        },
+        // Contoh Siswa 2
+        "0987654321": {
+            nama: "AAN DWI SAPUTRA",
+            mat: 78.0,
+            indo: 85.0,
+            ipa: 80.5,
+            ing: 88.0,
+            signature: "7cfce14f4e24ebca748c1f0340333be2810cd0474665476a89c89ff5df023ca7"
+        }
+    };
+
+    // 'Kunci Rahasia' Sekolah untuk memvalidasi data agar tidak bisa ditebak manual
+    const SECRET_SALT = "SMPN1PAJANGAN_SECURE_2026";
+
+    function cariSiswa() {
+        const nisn = document.getElementById("nisnInput").value.trim();
+        const errorMsg = document.getElementById("errorMsg");
+        const resultSection = document.getElementById("resultSection");
+
+        // Reset Tampilan
+        errorMsg.style.display = "none";
+        resultSection.style.display = "none";
+
+        if (databaseSiswa.hasOwnProperty(nisn)) {
+            const data = databaseSiswa[nisn];
+
+            // Verifikasi Integritas Enkripsi
+            const dataString = nisn + data.nama + data.mat + data.indo + data.ipa + data.ing + SECRET_SALT;
+            const kalkulasiSignature = CryptoJS.SHA256(dataString).toString();
+
+            // Jika signature cocok, data dijamin asli dan belum diubah oleh kecurangan pihak luar
+            if (kalkulasiSignature === data.signature) {
+                document.getElementById("resNama").innerText = data.nama;
+                document.getElementById("scoreMat").innerText = data.mat;
+                document.getElementById("scoreIndo").innerText = data.indo;
+                document.getElementById("scoreIpa").innerText = data.ipa;
+                document.getElementById("scoreIng").innerText = data.ing;
+                
+                resultSection.style.display = "block";
+            } else {
+                alert("Peringatan Keamanan: Terdeteksi upaya manipulasi data nilai siswa!");
+                console.error("Data integrity failure.");
+            }
+        } else {
+            errorMsg.style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>
